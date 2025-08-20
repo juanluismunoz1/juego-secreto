@@ -1,76 +1,48 @@
-let numeroSecreto = 0;
-let intentos = 0;
-let listaNumerosSorteados = [];
-let numeroMaximo = 10;
+let amigos = [];
 
+/**
+ * Agrega un nuevo amigo al array de amigos.
+ * Valida que el nombre no esté vacío antes de agregarlo y actualiza la lista visual.
+ */
+function agregarAmigo() {
+  let nombreAmigo = document.getElementById("amigo").value;
 
-
-function asignarTextoElemento(elemento, texto) {
-    let elementoHTML = document.querySelector(elemento);
-    elementoHTML.innerHTML = texto;
-    return;
+  if (nombreAmigo.trim() === "") {
+    alert("Por favor, inserte un nombre");
+  } else {
+    amigos.push(nombreAmigo);
+    document.querySelector("#amigo").value = "";
+    mostrarListaAmigo();
+  }
 }
 
-function verificarIntento() {
-    let numeroDeUsuario = parseInt(document.getElementById('valorUsuario').value);
-    
-    if (numeroDeUsuario === numeroSecreto) {
-        asignarTextoElemento('p',`Acertaste el número en ${intentos} ${(intentos === 1) ? 'vez' : 'veces'}`);
-        document.getElementById('reiniciar').removeAttribute('disabled');
-    } else {
-        //El usuario no acertó.
-        if (numeroDeUsuario > numeroSecreto) {
-            asignarTextoElemento('p','El número secreto es menor');
-        } else {
-            asignarTextoElemento('p','El número secreto es mayor');
-        }
-        intentos++;
-        limpiarCaja();
-    }
-    return;
+/**
+ * Actualiza la visualización de la lista de amigos en el DOM, creando elementos <li> para cada amigo.
+ */
+function mostrarListaAmigo() {
+  let listaAmigos = document.querySelector("#listaAmigos");
+  listaAmigos.innerHTML = "";
+
+  for (let index = 0; index < amigos.length; index++) {
+    const element = amigos[index];
+
+    let listaHTML = document.createElement("li");
+    listaHTML.textContent = element;
+    listaAmigos.appendChild(listaHTML);
+  }
 }
 
-function limpiarCaja() {
-    document.querySelector('#valorUsuario').value = '';
+/**
+ * Sortea y muestra un amigo de la lista de amigos de manera aleatoria.
+ * Verifica que la lista no esté vacía antes de realizar el sorteo.
+ */
+function sortearAmigo() {
+  let cantidadAmigos = amigos.length;
+  if (cantidadAmigos === 0) {
+    alert("Por favor, inserte un nombre antes de sortear");
+  } else {
+    let indiceAmigo = Math.floor(Math.random() * cantidadAmigos);
+    let resultadoHTML = document.querySelector("#resultado");
+    resultadoHTML.innerHTML = amigos[indiceAmigo];
+  }
 }
-
-function generarNumeroSecreto() {
-    let numeroGenerado =  Math.floor(Math.random()*numeroMaximo)+1;
-
-    console.log(numeroGenerado);
-    console.log(listaNumerosSorteados);
-    //Si ya sorteamos todos los números
-    if (listaNumerosSorteados.length == numeroMaximo) {
-        asignarTextoElemento('p','Ya se sortearon todos los números posibles');
-    } else {
-        //Si el numero generado está incluido en la lista 
-        if (listaNumerosSorteados.includes(numeroGenerado)) {
-            return generarNumeroSecreto();
-        } else {
-            listaNumerosSorteados.push(numeroGenerado);
-            return numeroGenerado;
-        }
-    }
-}
-
-function condicionesIniciales() {
-    asignarTextoElemento('h1','Juego del número secreto!');
-    asignarTextoElemento('p',`Indica un número del 1 al ${numeroMaximo}`);
-    numeroSecreto = generarNumeroSecreto();
-    intentos = 1;
-    console.log(numeroSecreto);
-}
-
-function reiniciarJuego() {
-    //limpiar caja
-    limpiarCaja();
-    //Indicar mensaje de intervalo de números 
-    //Generar el número aleatorio
-    //Inicializar el número intentos
-    condicionesIniciales();
-    //Deshabilitar el botón de nuevo juego
-    document.querySelector('#reiniciar').setAttribute('disabled','true');
-    
-}
-
-condicionesIniciales();
